@@ -2,6 +2,12 @@ from src import Extract, Load
 
 
 def salvar_universidades_por_pais(country: str, db_name: str = "universities") -> None:
+    """Extrai universidades por pais e salva os dados no SQLite.
+
+    Args:
+        country: Nome do pais para consulta na API.
+        db_name: Nome do banco SQLite sem extensao.
+    """
     extract = Extract()
     load = Load()
 

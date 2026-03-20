@@ -5,6 +5,14 @@ from typing import Any, Dict, List
 
 class Load:
     def _normalize_table_name(self, table_name: str) -> str:
+        """Normaliza o nome da tabela para um identificador SQL seguro.
+
+        Args:
+            table_name: Nome de tabela recebido na entrada.
+
+        Returns:
+            Nome com caracteres nao alfanumericos substituidos por underscore.
+        """
         normalized = re.sub(r"\W+", "_", table_name.strip().lower()).strip("_")
         if not normalized:
             raise ValueError("O nome da tabela nao pode ser vazio.")
@@ -16,12 +24,18 @@ class Load:
         db_name: str,
         table_name: str,
     ) -> None:
+        """Cria a tabela do pais informado e insere os registros retornados.
+
+        Args:
+            universities_list: Lista de universidades retornadas pela API.
+            db_name: Nome do banco SQLite sem extensao.
+            table_name: Nome da tabela a ser criada/atualizada.
+        """
         normalized_table = self._normalize_table_name(table_name)
         connection = sqlite3.connect(f"{db_name}.db")
         cursor = connection.cursor()
 
-        cursor.execute(
-            f"""
+        cursor.execute(f"""
             CREATE TABLE IF NOT EXISTS {normalized_table}
             (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,8 +45,7 @@ class Load:
                 web_pages TEXT,
                 domains TEXT
             );
-            """
-        )
+            """)
 
         for university in universities_list:
             cursor.execute(
